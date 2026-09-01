@@ -1,4 +1,34 @@
 task_metrics:
+  # BPB tasks: the primary metric is bits_per_byte (lower is better).
+  arc_easy_bpb: bits_per_byte
+  arc_challenge_bpb: bits_per_byte
+  hellaswag_bpb: bits_per_byte
+  piqa_bpb: bits_per_byte
+  openbookqa_bpb: bits_per_byte
+  boolq_bpb: bits_per_byte
+  copa_bpb: bits_per_byte
+  commonsense_qa_bpb: bits_per_byte
+  social_iqa_bpb: bits_per_byte
+  winogrande_bpb: bits_per_byte
+  mmlu_abstract_algebra_bpb: bits_per_byte
+  mmlu_anatomy_bpb: bits_per_byte
+  mmlu_astronomy_bpb: bits_per_byte
+  mmlu_college_biology_bpb: bits_per_byte
+  mmlu_college_chemistry_bpb: bits_per_byte
+  mmlu_college_computer_science_bpb: bits_per_byte
+  mmlu_college_mathematics_bpb: bits_per_byte
+  mmlu_college_physics_bpb: bits_per_byte
+  mmlu_computer_security_bpb: bits_per_byte
+  mmlu_conceptual_physics_bpb: bits_per_byte
+  mmlu_electrical_engineering_bpb: bits_per_byte
+  mmlu_elementary_mathematics_bpb: bits_per_byte
+  mmlu_high_school_biology_bpb: bits_per_byte
+  mmlu_high_school_chemistry_bpb: bits_per_byte
+  mmlu_high_school_computer_science_bpb: bits_per_byte
+  mmlu_high_school_mathematics_bpb: bits_per_byte
+  mmlu_high_school_physics_bpb: bits_per_byte
+  mmlu_high_school_statistics_bpb: bits_per_byte
+  mmlu_machine_learning_bpb: bits_per_byte
   mmlu: acc
   mmlu_prox_cs: exact_match
   mmlu_prox_de: exact_match
@@ -850,6 +880,96 @@ task_groups:
       - task: "polymath_{lang}_top"
         subset: "{lang}"
 
+  # ------------------------------------------------------------------
+  # BPB (bits-per-byte) groups.
+  #
+  # These score the *gold* continuation's loglikelihood normalised by its
+  # UTF-8 byte length, instead of argmax accuracy. At swarm scale (30M-150M
+  # params, a few B tokens) accuracy on these benchmarks sits near chance and
+  # is dominated by noise, which makes it a poor regression target; BPB is
+  # continuous, strictly decreasing with model quality, and is what
+  # DCLM/OLMo/Olmix fit data-mixture regressors on.
+  #
+  # Task definitions live in custom_lm_eval_tasks/bpb/ and are picked up via
+  # the default --include_path.
+  # ------------------------------------------------------------------
+  bpb-core:
+    description: "Bits-per-byte on the DCLM/Olmix core multiple-choice benchmarks (0-shot)"
+    suite: lm-eval-harness
+    n_shots: [0]
+    tasks:
+      - task: arc_easy_bpb
+        dataset: allenai/ai2_arc
+        subset: ARC-Easy
+      - task: arc_challenge_bpb
+        dataset: allenai/ai2_arc
+        subset: ARC-Challenge
+      - task: hellaswag_bpb
+        dataset: Rowan/hellaswag
+      - task: piqa_bpb
+        dataset: baber/piqa
+      - task: openbookqa_bpb
+        dataset: allenai/openbookqa
+        subset: main
+      - task: boolq_bpb
+        dataset: aps/super_glue
+        subset: boolq
+      - task: copa_bpb
+        dataset: aps/super_glue
+        subset: copa
+      - task: commonsense_qa_bpb
+        dataset: tau/commonsense_qa
+      - task: social_iqa_bpb
+        dataset: allenai/social_i_qa
+      - task: winogrande_bpb
+        dataset: allenai/winogrande
+        subset: winogrande_xl
+
+  bpb-mmlu-stem:
+    description: "Bits-per-byte on MMLU STEM subjects, cloze form (0-shot)"
+    suite: lm-eval-harness
+    n_shots: [0]
+    dataset: cais/mmlu
+    tasks:
+      - task: mmlu_abstract_algebra_bpb
+        subset: abstract_algebra
+      - task: mmlu_anatomy_bpb
+        subset: anatomy
+      - task: mmlu_astronomy_bpb
+        subset: astronomy
+      - task: mmlu_college_biology_bpb
+        subset: college_biology
+      - task: mmlu_college_chemistry_bpb
+        subset: college_chemistry
+      - task: mmlu_college_computer_science_bpb
+        subset: college_computer_science
+      - task: mmlu_college_mathematics_bpb
+        subset: college_mathematics
+      - task: mmlu_college_physics_bpb
+        subset: college_physics
+      - task: mmlu_computer_security_bpb
+        subset: computer_security
+      - task: mmlu_conceptual_physics_bpb
+        subset: conceptual_physics
+      - task: mmlu_electrical_engineering_bpb
+        subset: electrical_engineering
+      - task: mmlu_elementary_mathematics_bpb
+        subset: elementary_mathematics
+      - task: mmlu_high_school_biology_bpb
+        subset: high_school_biology
+      - task: mmlu_high_school_chemistry_bpb
+        subset: high_school_chemistry
+      - task: mmlu_high_school_computer_science_bpb
+        subset: high_school_computer_science
+      - task: mmlu_high_school_mathematics_bpb
+        subset: high_school_mathematics
+      - task: mmlu_high_school_physics_bpb
+        subset: high_school_physics
+      - task: mmlu_high_school_statistics_bpb
+        subset: high_school_statistics
+      - task: mmlu_machine_learning_bpb
+        subset: machine_learning
+
 super_groups:
   oellm-multilingual:
     description: "Combined Belebele EU set plus multilingual benchmarks"
@@ -861,3 +981,9 @@ super_groups:
       - task: mgsm-eu
       - task: generic-multilingual
       - task: include
+
+  bpb-all:
+    description: "All BPB benchmarks: core multiple-choice plus MMLU STEM"
+    task_groups:
+      - task: bpb-core
+      - task: bpb-mmlu-stem

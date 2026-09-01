@@ -1,0 +1,11 @@
+include: _bpb_template_yaml
+task: piqa_bpb
+dataset_path: baber/piqa
+dataset_name: null
+training_split: train
+validation_split: validation
+test_split: null
+doc_to_text: "Question: {{goal}}\nAnswer:"
+doc_to_target: label
+doc_to_choice: "{{[sol1, sol2]}}"
+process_results: !function utils.process_results_piqa

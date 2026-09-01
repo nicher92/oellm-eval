@@ -1,0 +1,3 @@
+include: _mmlu_stem_bpb_template_yaml
+task: mmlu_abstract_algebra_bpb
+dataset_name: abstract_algebra

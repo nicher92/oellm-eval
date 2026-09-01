@@ -1,0 +1,22 @@
+# Shared config for the BPB (bits-per-byte) task variants.
+#
+# Each task keeps its upstream prompt format and dataset so that BPB is
+# measured on exactly the same documents as the accuracy-based task, but
+# overrides process_results (see utils.py) so that the gold continuation's
+# (loglikelihood, byte_length) pair is emitted for the bits_per_byte
+# aggregation. acc/acc_norm come along for free.
+tag:
+  - bpb
+output_type: multiple_choice
+metric_list:
+  - metric: bits_per_byte
+    aggregation: bits_per_byte
+    higher_is_better: false
+  - metric: acc
+    aggregation: mean
+    higher_is_better: true
+  - metric: acc_norm
+    aggregation: mean
+    higher_is_better: true
+metadata:
+  version: 1.0

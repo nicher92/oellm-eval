@@ -1,0 +1,12 @@
+include: _bpb_template_yaml
+task: hellaswag_bpb
+dataset_path: Rowan/hellaswag
+dataset_name: null
+training_split: train
+validation_split: validation
+test_split: null
+process_docs: !function utils.process_docs_hellaswag
+doc_to_text: "{{query}}"
+doc_to_target: "{{gold}}"
+doc_to_choice: "choices"
+process_results: !function utils.process_results_hellaswag

@@ -1,0 +1,12 @@
+# multiple_input task: the two options are substituted into the *context* and
+# the continuation is shared, so BPB is measured on the shared continuation.
+include: _bpb_template_yaml
+task: winogrande_bpb
+dataset_path: allenai/winogrande
+dataset_name: winogrande_xl
+training_split: train
+validation_split: validation
+doc_to_text: !function utils.doc_to_text_winogrande
+doc_to_target: !function utils.doc_to_target_winogrande
+doc_to_choice: !function utils.doc_to_choice_winogrande
+process_results: !function utils.process_results_winogrande

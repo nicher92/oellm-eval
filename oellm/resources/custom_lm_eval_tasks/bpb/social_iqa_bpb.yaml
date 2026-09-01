@@ -1,0 +1,10 @@
+include: _bpb_template_yaml
+task: social_iqa_bpb
+dataset_path: allenai/social_i_qa
+dataset_name: null
+training_split: train
+validation_split: validation
+doc_to_text: "Question: {{context}} {{question}}\nAnswer:"
+doc_to_target: "{{label|int - 1}}"
+doc_to_choice: "{{[answerA, answerB, answerC]}}"
+process_results: !function utils.process_results_social_iqa

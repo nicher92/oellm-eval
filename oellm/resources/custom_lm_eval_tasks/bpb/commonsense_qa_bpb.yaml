@@ -1,0 +1,11 @@
+# Cloze form: the continuation is the answer *text*, not the letter "A".."E".
+# Scoring BPB on a single letter would measure format-following, not knowledge.
+include: _bpb_template_yaml
+task: commonsense_qa_bpb
+dataset_path: tau/commonsense_qa
+training_split: train
+validation_split: validation
+doc_to_text: "Question: {{ question.strip() }}\nAnswer:"
+doc_to_target: "{{choices.label.index(answerKey)}}"
+doc_to_choice: "{{choices.text}}"
+process_results: !function utils.process_results_commonsense_qa
